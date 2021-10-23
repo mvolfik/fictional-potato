@@ -2,6 +2,17 @@
 
 ```sh
 cd /tmp/
+
+# <needed until='https://github.com/Rich-Harris/magic-string/pull/193 is merged'>
+git clone git@github.com:mvolfik/magic-string.git
+cd magic-string
+git switch feature-copy
+npm install
+npm run build
+yarn link
+cd ..
+# </needed>
+
 git clone git@github.com:mvolfik/fictional-potato.git
 cd fictional-potato
 pnpm install
@@ -13,6 +24,9 @@ git clone git@github.com:mvolfik/language-tools.git
 cd language-tools
 git switch improve-sveltecomponent-bindthis
 yarn install
+# <needed ref='-1'> <!-- you know what I mean -->
+yarn link magic-string
+# </needed>
 yarn bootstrap
 cd packages/svelte-check
 yarn build
