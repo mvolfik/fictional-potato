@@ -4,6 +4,7 @@
 cd /tmp/
 
 # <needed until='https://github.com/Rich-Harris/magic-string/pull/193 is merged'>
+# clone the repo, checkout PR, build and prepare to link
 git clone git@github.com:mvolfik/magic-string.git
 cd magic-string
 git switch feature-copy
@@ -13,12 +14,14 @@ yarn link
 cd ..
 # </needed>
 
+# clone this test repo and run check with stock svelte-check
 git clone git@github.com:mvolfik/fictional-potato.git
 cd fictional-potato
 pnpm install
 pnpm run check
 # now you see output from current state
 
+# clone language-tools, checkout this PR, build and prepare to link
 cd /tmp/
 git clone git@github.com:mvolfik/language-tools.git
 cd language-tools
@@ -28,10 +31,12 @@ yarn install
 yarn link magic-string
 # </needed>
 yarn bootstrap
+yarn workspace svelte-language-server run build
 cd packages/svelte-check
 yarn build
 pnpm link --global
 
+# cd back to this repo, do the link and run check with the upgrade
 cd /tmp/fictional-potato # or wherever you cloned this
 pnpm link --global svelte-check
 pnpm run check
