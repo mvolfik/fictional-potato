@@ -1,65 +1,57 @@
 <script lang="ts">
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
+  import type { SvelteComponent } from "svelte";
+  import { onMount } from "svelte";
+  import Exact from "./Exact.svelte";
+  import Simpler from "./Simpler.svelte";
+  import Incorrect from "./Incorrect.svelte";
+
+  type C = SvelteComponent & { action: (a: number) => number | string };
+  let data: Record<string, C> = {};
+  let e: C;
+  let s: C;
+  let i: C;
+
+  let htmle: HTMLDivElement;
+  let show = false;
+
+  onMount(() => {
+    let b: number | boolean = Math.random();
+    if (b < 0.5) {
+      b = false;
+    }
+    const a: number | string = b && "foo";
+    console.log(a);
+  });
+
+  $: {
+    console.log("Data:", data);
+    console.log("Indi:", e, s, i);
+    console.log("html:", htmle);
+  }
 </script>
 
-<main>
-  <img src={logo} alt="Svelte Logo" />
-  <h1>Hello Typescript!</h1>
+{#each [{ k: "simpler", v: Simpler }, { k: "exact", v: Exact }, { k: "incorrect", v: Incorrect }, { k: "weird", v: true }] as { k, v } (k)}
+  <svelte:component this={show ? v : null} bind:this={data[k]} />
+{/each}
 
-  <Counter />
+{#each [{ k: "simpler", v: Simpler }, { k: "exact", v: Exact }, { k: "incorrect", v: Incorrect }] as { k, v } (k)}
+  <svelte:component this={show ? v : null} bind:this={data[k]} />
+{/each}
 
-  <p>
-    Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
+{#each [{ k: "simpler", v: Simpler }, { k: "incorrect", v: Incorrect }] as { k, v } (k)}
+  <svelte:component this={show ? v : null} bind:this={data[k]} />
+{/each}
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
-</main>
+{#each [{ k: "simpler", v: Simpler }, { k: "exact", v: Exact }] as { k, v } (k)}
+  <svelte:component this={show ? v : null} bind:this={data[k]} />
+{/each}
 
-<style>
-  :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
+{#if show}
+  <Exact bind:this={e} />
+  <Simpler bind:this={s} />
+  <Incorrect bind:this={i} />
 
-  main {
-    text-align: center;
-    padding: 1em;
-    margin: 0 auto;
-  }
+  <div bind:this={htmle} />
+{/if}
 
-  img {
-    height: 16rem;
-    width: 16rem;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4rem;
-    font-weight: 100;
-    line-height: 1.1;
-    margin: 2rem auto;
-    max-width: 14rem;
-  }
-
-  p {
-    max-width: 14rem;
-    margin: 1rem auto;
-    line-height: 1.35;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      max-width: none;
-    }
-
-    p {
-      max-width: none;
-    }
-  }
-</style>
+<p><label><input type="checkbox" bind:checked={show} /> Show stuff</label></p>
